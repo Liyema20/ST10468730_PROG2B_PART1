@@ -9,53 +9,63 @@ on:
       - main
 
 jobs:
-  validate-raceday-project:
+  validate-raceday:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Check required project files
+      - name: Check required documentation
         run: |
-          echo "Checking RaceDay project files..."
+          echo "Checking RaceDay documentation..."
 
           test -f README.md
           test -f Changelog
-          test -f RaceDayDB.sql
-          test -f raceday_erd.png
-          test -f "API_Endpoint_Reference (1).docx"
+          test -f docs/RaceDayDB.sql
+          test -f docs/raceday_erd.png
+          test -f docs/API_Endpoint_Reference.docx
 
           echo "All required RaceDay files are present."
 
-      - name: Check SQL database entities
+      - name: Check ERD
+        run: |
+          echo "Checking ERD..."
+          test -s docs/raceday_erd.png
+          echo "ERD check passed."
+
+      - name: Check SQL entities
         run: |
           echo "Checking RaceDay SQL database..."
 
-          grep -qi "CREATE TABLE Users" RaceDayDB.sql
-          grep -qi "CREATE TABLE Events" RaceDayDB.sql
-          grep -qi "CREATE TABLE EventRoutes" RaceDayDB.sql
-          grep -qi "CREATE TABLE Categories" RaceDayDB.sql
-          grep -qi "CREATE TABLE Enrolments" RaceDayDB.sql
-          grep -qi "CREATE TABLE Results" RaceDayDB.sql
+          grep -qi "CREATE TABLE Users" docs/RaceDayDB.sql
+          grep -qi "CREATE TABLE Events" docs/RaceDayDB.sql
+          grep -qi "CREATE TABLE EventRoutes" docs/RaceDayDB.sql
+          grep -qi "CREATE TABLE Categories" docs/RaceDayDB.sql
+          grep -qi "CREATE TABLE Enrolments" docs/RaceDayDB.sql
+          grep -qi "CREATE TABLE Results" docs/RaceDayDB.sql
 
           echo "All 6 RaceDay entities found."
 
       - name: Check SQL seed data
         run: |
-          echo "Checking sample data..."
+          echo "Checking RaceDay sample data..."
 
-          grep -qi "INSERT INTO Users" RaceDayDB.sql
-          grep -qi "INSERT INTO Events" RaceDayDB.sql
-          grep -qi "INSERT INTO Categories" RaceDayDB.sql
-          grep -qi "INSERT INTO Enrolments" RaceDayDB.sql
+          grep -qi "INSERT INTO Users" docs/RaceDayDB.sql
+          grep -qi "INSERT INTO Events" docs/RaceDayDB.sql
+          grep -qi "INSERT INTO Categories" docs/RaceDayDB.sql
+          grep -qi "INSERT INTO Enrolments" docs/RaceDayDB.sql
 
-          echo "Sample data found."
+          echo "Required sample data found."
 
-      - name: RaceDay CI validation successful
+      - name: CI validation successful
         run: |
-          echo "======================================"
-          echo "RaceDay CI validation successful!"
-          echo "All required files and SQL entities"
-          echo "have passed the project checks."
-          echo "======================================"
+          echo "=========================================="
+          echo "       RACEDAY CI VALIDATION PASSED"
+          echo "=========================================="
+          echo "Project structure: PASS"
+          echo "Documentation: PASS"
+          echo "ERD: PASS"
+          echo "SQL entities: PASS"
+          echo "SQL seed data: PASS"
+          echo "=========================================="
