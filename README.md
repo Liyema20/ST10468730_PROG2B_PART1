@@ -1,56 +1,73 @@
- Every race begins with a database.All races start with the establishment of a race database.
+  name: RaceDay CI
 
-A South African Road Running full-stacked event management solution.
-Walking- and cycling-friendliness. It allows the creation and management of events by the Organisers,
-There are three types of results: categories, and results, and **Participants** browse events, enter categories,
-Log and review their own racial history. To access Part 1 please visit this repository.
-planning deliverables - entity relationship diagram, api endpoint plan,
-and the SQL database script.
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
 
-## Roles
+jobs:
+  validate-raceday:
+    runs-on: ubuntu-latest
 
-- Organiser: Access to create, edit and delete events, manage event categories,
-  Capture participant results and see all the participant Counts of their events.
-- Log in, view events, and register for an event and
-  Changing the category, checking their own enrollments and monitoring their individual
-  results.
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-## Repository structure
+      - name: Check required documentation
+        run: |
+          echo "Checking RaceDay documentation..."
 
-```
-.
-├── docs/
-│   ├── raceday_erd.png                  # Section A — ERD
-│   ├── RaceDay_API_Endpoint_Plan.pdf    # Section B — API endpoint plan
-│   └── RaceDay_Schema.sql               # Section C — SQL schema + seed data
-├── .github/
-│   └── workflows/
-│       └── validate-structure.yml       # CI: validates /docs contains required files
-└── README.md
-```
+          test -f README.md
+          test -f Changelog
+          test -f docs/RaceDayDB.sql
+          test -f docs/raceday_erd.png
+          test -f docs/API_Endpoint_Reference.docx
 
-## CI/CD
+          echo "All required documentation files are present."
 
-It runs on a GitHub Actions workflow (`.github/workflows/validate-structure.yml`)
-All pushes are confirmed by:
-If the `/docs` folder is present, then
-- it is the listing of the database objects in the ERD, endpoint plan, and SQL script, and
-The top level of the repo contains - and README.md - .
+      - name: Check ERD
+        run: |
+          echo "Checking ERD..."
 
-**Latest build:**
+          test -s docs/raceday_erd.png
 
-![CI passing](docs/ci-success-screenshot.png)
+          echo "ERD file exists and is not empty."
 
-## Video walkthrough
+      - name: Check SQL entities
+        run: |
+          echo "Checking RaceDay SQL database..."
 
-Clicking on an unlisted YouTube video thru the planning documents,
-decisions, endpoint plan selections, and a 'live' run of the SQL script in SSMS:
+          grep -qi "CREATE TABLE Users" docs/RaceDayDB.sql
+          grep -qi "CREATE TABLE Events" docs/RaceDayDB.sql
+          grep -qi "CREATE TABLE EventRoutes" docs/RaceDayDB.sql
+          grep -qi "CREATE TABLE Categories" docs/RaceDayDB.sql
+          grep -qi "CREATE TABLE Enrolments" docs/RaceDayDB.sql
+          grep -qi "CREATE TABLE Results" docs/RaceDayDB.sql
 
-🔗 [Watch the walkthrough](PASTE_YOUR_YOUTUBE_LINK_HERE)
+          echo "All 6 database entities found."
 
-## AI tool disclosure
+      - name: Check SQL seed data
+        run: |
+          echo "Checking RaceDay sample data..."
 
-As instructed in the call to action: if any AI was used briefly tell about it here.
-     e.g. Claude was used to help draft ERD diagram, API endpoint plan
-     table, and SQL script structure; all design decisions, entity choices, and program specifications; all design decisions, entity choices, and program specifications;
-     By me it means your baccarat and testing was reviewed and validated". Don't be flattery, and do don't be long-winded.
+          grep -qi "INSERT INTO Users" docs/RaceDayDB.sql
+          grep -qi "INSERT INTO Events" docs/RaceDayDB.sql
+          grep -qi "INSERT INTO Categories" docs/RaceDayDB.sql
+          grep -qi "INSERT INTO Enrolments" docs/RaceDayDB.sql
+
+          echo "Required sample data found."
+
+      - name: CI validation successful
+        run: |
+          echo "=========================================="
+          echo "       RACEDAY CI VALIDATION PASSED"
+          echo "=========================================="
+          echo "Project structure: PASS"
+          echo "Documentation: PASS"
+          echo "ERD: PASS"
+          echo "SQL entities: PASS"
+          echo "SQL seed data: PASS"
+          echo "=========================================="
