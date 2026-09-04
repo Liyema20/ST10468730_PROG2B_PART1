@@ -1,4 +1,4 @@
-name: RaceDay CI
+ name: RaceDay CI
 
 on:
   push:
@@ -9,35 +9,53 @@ on:
       - main
 
 jobs:
-  validate-project:
+  validate-raceday-project:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Check project structure
+      - name: Check required project files
         run: |
-          echo "Checking RaceDay project structure..."
+          echo "Checking RaceDay project files..."
 
-          test -f docs/RaceDayDB.sql
-          test -f docs/ERD.png
-          test -f docs/API_Endpoint_Plan.md
+          test -f README.md
+          test -f Changelog
+          test -f RaceDayDB.sql
+          test -f raceday_erd.png
+          test -f "API_Endpoint_Reference (1).docx"
 
-          echo "All required documentation files found."
+          echo "All required RaceDay files are present."
 
-      - name: Check SQL script
+      - name: Check SQL database entities
         run: |
-          echo "Checking SQL script..."
+          echo "Checking RaceDay SQL database..."
 
-          grep -qi "CREATE TABLE Users" docs/RaceDayDB.sql
-          grep -qi "CREATE TABLE Events" docs/RaceDayDB.sql
-          grep -qi "CREATE TABLE EventRoutes" docs/RaceDayDB.sql
-          grep -qi "CREATE TABLE Categories" docs/RaceDayDB.sql
-          grep -qi "CREATE TABLE Enrolments" docs/RaceDayDB.sql
-          grep -qi "CREATE TABLE Results" docs/RaceDayDB.sql
+          grep -qi "CREATE TABLE Users" RaceDayDB.sql
+          grep -qi "CREATE TABLE Events" RaceDayDB.sql
+          grep -qi "CREATE TABLE EventRoutes" RaceDayDB.sql
+          grep -qi "CREATE TABLE Categories" RaceDayDB.sql
+          grep -qi "CREATE TABLE Enrolments" RaceDayDB.sql
+          grep -qi "CREATE TABLE Results" RaceDayDB.sql
 
-          echo "All six required entities found in SQL script."
+          echo "All 6 RaceDay entities found."
 
-      - name: CI validation successful
-        run: echo "RaceDay CI validation completed successfully!"
+      - name: Check SQL seed data
+        run: |
+          echo "Checking sample data..."
+
+          grep -qi "INSERT INTO Users" RaceDayDB.sql
+          grep -qi "INSERT INTO Events" RaceDayDB.sql
+          grep -qi "INSERT INTO Categories" RaceDayDB.sql
+          grep -qi "INSERT INTO Enrolments" RaceDayDB.sql
+
+          echo "Sample data found."
+
+      - name: RaceDay CI validation successful
+        run: |
+          echo "======================================"
+          echo "RaceDay CI validation successful!"
+          echo "All required files and SQL entities"
+          echo "have passed the project checks."
+          echo "======================================"
