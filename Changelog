@@ -1,0 +1,20 @@
+initial commit
+add docs folder
+jot down entities for erd
+add erd diagram
+Use useDotFileFrom to add dot file for erd
+Builds plan for an api endpoint.Creates plan for api endpoint.
+Complete the endpoint plans table.
+Add users and venues tables:
+Add the tables events and categories.Create the tables events and categories.
+Include tables of enrollements and results.
+seed users and venues
+Understand that events and categories are specified by seeds.
+The report provides information on the enrollment of seeds and outcomes.
+Check that the Fk constraints are set.Verify the Fk constraints are set.
+Would you like to add an actions workflow?
+fix workflow path
+add readme content
+Add a screenshot of the 'add ci' to the readme.
+add video link
+small readme fixes
