@@ -1,0 +1,43 @@
+name: RaceDay CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  validate-project:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Check project structure
+        run: |
+          echo "Checking RaceDay project structure..."
+
+          test -f docs/RaceDayDB.sql
+          test -f docs/ERD.png
+          test -f docs/API_Endpoint_Plan.md
+
+          echo "All required documentation files found."
+
+      - name: Check SQL script
+        run: |
+          echo "Checking SQL script..."
+
+          grep -qi "CREATE TABLE Users" docs/RaceDayDB.sql
+          grep -qi "CREATE TABLE Events" docs/RaceDayDB.sql
+          grep -qi "CREATE TABLE EventRoutes" docs/RaceDayDB.sql
+          grep -qi "CREATE TABLE Categories" docs/RaceDayDB.sql
+          grep -qi "CREATE TABLE Enrolments" docs/RaceDayDB.sql
+          grep -qi "CREATE TABLE Results" docs/RaceDayDB.sql
+
+          echo "All six required entities found in SQL script."
+
+      - name: CI validation successful
+        run: echo "RaceDay CI validation completed successfully!"
